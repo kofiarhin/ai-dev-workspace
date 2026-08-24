@@ -12,6 +12,7 @@ $repositoryRoot = Split-Path -Parent $PSScriptRoot
 $sourceRoot = Join-Path $repositoryRoot "skills"
 $skillNames = @(
     "setup-workspace",
+    "morning-brief",
     "ticket",
     "spec",
     "plan",
@@ -64,6 +65,7 @@ foreach ($skillName in $skillNames) {
     }
 }
 
-Write-Host "Installed software-delivery skills at: $skillsDirectory"
+Write-Host "Installed AI software-delivery skills at: $skillsDirectory"
 Write-Host "Start with: /setup-workspace PRD.md"
+Write-Host "Orient with: /morning-brief"
 Write-Host "Then use: /ticket -> /spec -> /plan -> /implement-plan"
