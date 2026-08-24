@@ -16,11 +16,12 @@ Extract only supported facts. Preserve distinctive customer language where usefu
 
 ## Evidence labels
 
-- `PRD`: stated directly in the selected PRD
+- `PRD`: stated directly in the selected PRD/specification
 - `Implemented`: confirmed by current workspace evidence
+- `Verified`: confirmed by checks or evidence actually inspected
 - `Unresolved`: absent, ambiguous, or contradictory
 - `Historical`: superseded context retained for traceability
 
-Do not convert recommendations into approved requirements. Do not manufacture customer quotes, research, metrics, implementation status, test results, or architectural decisions.
+Do not convert recommendations into approved requirements. Do not manufacture customer quotes, research, metrics, implementation status, test results, lessons, or architectural decisions.
 
-For a PRD-only workspace, record implementation as not started unless the PRD explicitly provides other evidence. For an established workspace, inspect only enough repository evidence to describe the current state accurately.
+For a PRD-only workspace, record implementation as not started unless the source explicitly provides other evidence. For an established workspace, inspect only enough repository evidence to describe the current state accurately.

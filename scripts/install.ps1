@@ -9,30 +9,61 @@ param(
 $ErrorActionPreference = "Stop"
 
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
-$source = Join-Path $repositoryRoot "skill"
+$sourceRoot = Join-Path $repositoryRoot "skills"
+$skillNames = @(
+    "setup-workspace",
+    "ticket",
+    "spec",
+    "plan",
+    "implement-plan"
+)
 
-if (-not (Test-Path -LiteralPath $source -PathType Container)) {
-    throw "Skill source directory was not found: $source"
+if (-not (Test-Path -LiteralPath $sourceRoot -PathType Container)) {
+    throw "Skills source directory was not found: $sourceRoot"
 }
 
 $resolvedProject = (Resolve-Path -LiteralPath $ProjectPath).Path
 $skillsDirectory = Join-Path $resolvedProject ".claude\skills"
-$destination = Join-Path $skillsDirectory "setup-prd-workspace"
+$legacyDestination = Join-Path $skillsDirectory "setup-prd-workspace"
 
-if (Test-Path -LiteralPath $destination) {
-    if (-not $Force) {
-        throw "The skill is already installed at '$destination'. Rerun with -Force to replace it."
+$existing = @()
+foreach ($skillName in $skillNames) {
+    $destination = Join-Path $skillsDirectory $skillName
+    if (Test-Path -LiteralPath $destination) {
+        $existing += $destination
     }
+}
+if (Test-Path -LiteralPath $legacyDestination) {
+    $existing += $legacyDestination
+}
 
-    Remove-Item -LiteralPath $destination -Recurse -Force
+if ($existing.Count -gt 0 -and -not $Force) {
+    throw "One or more delivery skills are already installed. Rerun with -Force to replace them: $($existing -join ', ')"
 }
 
 New-Item -ItemType Directory -Path $skillsDirectory -Force | Out-Null
-Copy-Item -LiteralPath $source -Destination $destination -Recurse
 
-if (-not (Test-Path -LiteralPath (Join-Path $destination "SKILL.md") -PathType Leaf)) {
-    throw "Installation failed because SKILL.md was not copied."
+if ($Force) {
+    foreach ($path in $existing) {
+        Remove-Item -LiteralPath $path -Recurse -Force
+    }
 }
 
-Write-Host "Installed setup-prd-workspace at: $destination"
-Write-Host "Open the project in Claude Code and run: /setup-prd-workspace PRD.md"
+foreach ($skillName in $skillNames) {
+    $source = Join-Path $sourceRoot $skillName
+    $destination = Join-Path $skillsDirectory $skillName
+
+    if (-not (Test-Path -LiteralPath (Join-Path $source "SKILL.md") -PathType Leaf)) {
+        throw "Skill source is incomplete: $source"
+    }
+
+    Copy-Item -LiteralPath $source -Destination $destination -Recurse
+
+    if (-not (Test-Path -LiteralPath (Join-Path $destination "SKILL.md") -PathType Leaf)) {
+        throw "Installation failed for skill: $skillName"
+    }
+}
+
+Write-Host "Installed software-delivery skills at: $skillsDirectory"
+Write-Host "Start with: /setup-workspace PRD.md"
+Write-Host "Then use: /ticket -> /spec -> /plan -> /implement-plan"
