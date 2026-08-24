@@ -1,18 +1,19 @@
 # AI Software Delivery Workspace
 
-A reusable Claude Code workflow that turns a PRD and repository context into a persistent, reviewable software-delivery loop.
+A reusable Claude Code workflow that turns a PRD and repository context into a persistent, reviewable software-delivery loop with a read-only operator brief for deciding what matters next.
 
-The package installs five skills:
+The package installs six skills:
 
 ```text
 /setup-workspace
+/morning-brief
 /ticket
 /spec
 /plan
 /implement-plan
 ```
 
-The workflow follows one simple chain:
+The package separates orientation from delivery:
 
 ```text
 PRD
@@ -20,6 +21,12 @@ PRD
 /setup-workspace
   ↓
 project brain + roadmap
+  ↓
+/morning-brief
+  ↓
+one evidence-backed recommended next outcome
+  ↓
+human selects or refines the outcome
   ↓
 /ticket
   ↓
@@ -40,7 +47,7 @@ RED → GREEN → REFACTOR → VERIFY
 review + document sync + lessons
 ```
 
-The repository becomes the long-term memory. `context/lessons.md` keeps short, repository-specific lessons learned from verified work so future tickets, specs, plans, and implementations can avoid repeating mistakes without introducing a separate memory service.
+The repository becomes the long-term memory. `context/lessons.md` keeps short, repository-specific lessons learned from verified work so future briefs, tickets, specs, plans, and implementations can avoid repeating mistakes without introducing a separate memory service.
 
 ## What `/setup-workspace` creates
 
@@ -78,9 +85,15 @@ Existing files are preserved and compatible content is merged conservatively.
 
 Builds the project brain from a selected PRD or equivalent product specification plus current repository evidence. It is documentation-only.
 
+### `/morning-brief`
+
+Produces a concise read-only operator brief from the project's own operating guide, roadmap, current state, verification evidence, available GitHub state, and real customer signals. It reconciles project truth, flags stale or conflicting status, identifies verification debt and material risks, and recommends exactly one next ticket outcome.
+
+It does not edit files, modify GitHub state, create tickets automatically, run persistent jobs, change data, commit, push, merge, deploy, or activate routines. Pass the selected recommendation to `/ticket` after human review.
+
 ### `/ticket`
 
-Turns a roadmap item, bug report, idea, or request into one clear assignment with a visible finish line. A ticket defines **what should change and why**, not the implementation design.
+Turns a roadmap item, morning-brief recommendation, bug report, idea, or request into one clear assignment with a visible finish line. A ticket defines **what should change and why**, not the implementation design.
 
 ### `/spec`
 
@@ -102,7 +115,7 @@ After verified implementation it keeps these documents aligned when relevant:
 - `roadmap.md`
 - `context/lessons.md`
 
-A plan does not count as implementation evidence. A lesson must come from something actually observed in the repository, tests, review, or implementation.
+A morning brief, ticket, specification, or plan does not count as implementation evidence. A lesson must come from something actually observed in the repository, tests, review, or implementation.
 
 ## Install on Windows
 
@@ -142,16 +155,27 @@ Use an exact relative or absolute path when needed:
 
 An example input is available at [`examples/Sample-PRD.md`](examples/Sample-PRD.md).
 
+## Operator example
+
+Start a working session with:
+
+```text
+/morning-brief
+```
+
+The brief should end with no more than one recommended next ticket outcome. Review or refine that recommendation before handing it to `/ticket`.
+
 ## Delivery example
 
 ```text
+/morning-brief
 /ticket Add saved products
 /spec tickets/004-saved-products.md
 /plan spec/004-saved-products.md
 /implement-plan plans/004-saved-products.md
 ```
 
-Each downstream artifact should reference its source so code can be traced back through plan → spec → ticket → roadmap/PRD.
+Each downstream artifact should reference its source so code can be traced back through plan → spec → ticket → roadmap/PRD. A morning-brief recommendation may explain why a ticket was selected, but the ticket must independently re-read current evidence.
 
 ## Updating an installation
 
@@ -159,7 +183,7 @@ Pull the latest repository changes and rerun the installer with `-Force` on Wind
 
 ## Safety boundaries
 
-The planning skills do not install dependencies, commit, push, merge, deploy, or silently make high-risk product decisions. `/implement-plan` changes runtime code only when the plan is approved and higher-priority project rules permit it. Material scope, architecture, dependency, migration, authentication, payment, permission, or security changes must stop for renewed approval rather than being silently absorbed.
+`/morning-brief` is read-only. The planning skills do not install dependencies, commit, push, merge, deploy, or silently make high-risk product decisions. `/implement-plan` changes runtime code only when the plan is approved and higher-priority project rules permit it. Material scope, architecture, dependency, migration, authentication, payment, permission, or security changes must stop for renewed approval rather than being silently absorbed.
 
 Production deployment, destructive data operations, live billing/customer-data decisions, credential sharing, and security-policy decisions remain human-owned.
 
