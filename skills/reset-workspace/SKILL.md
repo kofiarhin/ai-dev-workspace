@@ -13,7 +13,7 @@ This is a destructive workspace-state operation. Always inspect first, show the 
 
 Read `.claude/workspace-manifest.json` from the resolved workspace root.
 
-The manifest is the only ownership source for deletion. Follow the contract in the installed setup-workspace reference `references/workspace-manifest.md` when available.
+The manifest is the only ownership source for deletion. When installed, use `.claude/skills/setup-workspace/references/workspace-manifest.md` as the manifest contract.
 
 If the manifest is missing, unreadable, malformed, has an unsupported schema version, points outside the workspace, or has an unexpected `managedBy` value:
 
