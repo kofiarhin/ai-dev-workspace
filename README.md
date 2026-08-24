@@ -1,16 +1,48 @@
-# Setup PRD Workspace
+# AI Software Delivery Workspace
 
-A reusable Claude Code skill that turns one product requirements document (PRD) into an AI-ready project operating workspace.
+A reusable Claude Code workflow that turns a PRD and repository context into a persistent, reviewable software-delivery loop.
 
-It works with:
+The package installs five skills:
 
-- a new project containing only a PRD;
-- an existing repository with application code;
-- a project that already contains some operating documentation.
+```text
+/setup-workspace
+/ticket
+/spec
+/plan
+/implement-plan
+```
 
-The skill creates documentation only. It does not scaffold application code, install dependencies, commit changes, push branches, or deploy.
+The workflow follows one simple chain:
 
-## What it creates
+```text
+PRD
+  ↓
+/setup-workspace
+  ↓
+project brain + roadmap
+  ↓
+/ticket
+  ↓
+tickets/NNN-feature.md
+  ↓
+/spec
+  ↓
+spec/NNN-feature.md
+  ↓
+/plan
+  ↓
+plans/NNN-feature.md
+  ↓
+/implement-plan
+  ↓
+RED → GREEN → REFACTOR → VERIFY
+  ↓
+review + document sync + lessons
+```
+
+The repository becomes the long-term memory. `context/lessons.md` keeps short, repository-specific lessons learned from verified work so future tickets, specs, plans, and implementations can avoid repeating mistakes without introducing a separate memory service.
+
+## What `/setup-workspace` creates
 
 ```text
 AGENTS.md
@@ -22,9 +54,14 @@ context/
   architecture.md
   decisions.md
   current-state.md
+  lessons.md
 customers/
   README.md
+tickets/
+  README.md
 spec/
+  README.md
+plans/
   README.md
 demos/
   core-flow.md
@@ -35,23 +72,44 @@ routines/
 
 Existing files are preserved and compatible content is merged conservatively.
 
-## Install on Windows
+## Responsibilities
 
-Clone this repository, then run:
+### `/setup-workspace`
+
+Builds the project brain from a selected PRD or equivalent product specification plus current repository evidence. It is documentation-only.
+
+### `/ticket`
+
+Turns a roadmap item, bug report, idea, or request into one clear assignment with a visible finish line. A ticket defines **what should change and why**, not the implementation design.
+
+### `/spec`
+
+Turns an approved ticket into the technical contract. It inspects the relevant architecture, decisions, code, and tests before describing how the requested behaviour should fit the existing system.
+
+### `/plan`
+
+Turns the spec into small implementation slices. Each testable slice is planned around **RED → GREEN → REFACTOR → VERIFY**.
+
+### `/implement-plan`
+
+Executes an approved plan against the current repository. It uses TDD by default, runs relevant verification, reviews the result against `review.md`, and updates project truth only from observed implementation evidence.
+
+After verified implementation it keeps these documents aligned when relevant:
+
+- `context/current-state.md`
+- `context/architecture.md`
+- `context/decisions.md`
+- `roadmap.md`
+- `context/lessons.md`
+
+A plan does not count as implementation evidence. A lesson must come from something actually observed in the repository, tests, review, or implementation.
+
+## Install on Windows
 
 ```powershell
 git clone https://github.com/kofiarhin/setup-prd-workspace.git
 cd setup-prd-workspace
-```
-
-```powershell
 .\scripts\install.ps1 -ProjectPath "C:\path\to\your-project"
-```
-
-The skill is installed at:
-
-```text
-your-project/.claude/skills/setup-prd-workspace/
 ```
 
 ## Install on macOS or Linux
@@ -62,51 +120,48 @@ cd setup-prd-workspace
 ./scripts/install.sh /path/to/your-project
 ```
 
-## Use the skill
-
-Open the target project in Claude Code. Place a PRD in the project, then run:
+The skills are installed under:
 
 ```text
-/setup-prd-workspace PRD.md
+your-project/.claude/skills/
 ```
 
-Use the exact relative or absolute path when the file has a different name:
+## Start a project
+
+Place a PRD in the project and run:
 
 ```text
-/setup-prd-workspace docs/product-requirements.md
+/setup-workspace PRD.md
+```
+
+Use an exact relative or absolute path when needed:
+
+```text
+/setup-workspace docs/product-requirements.md
 ```
 
 An example input is available at [`examples/Sample-PRD.md`](examples/Sample-PRD.md).
 
-## After setup
-
-The skill stops after creating the operating workspace. Continue development with one ticket at a time:
+## Delivery example
 
 ```text
-Read AGENTS.md, CLAUDE.md, roadmap.md, review.md, and context/*.md.
-
-Create the next implementation ticket from the first incomplete roadmap item.
-Follow spec/README.md and save the ticket under spec/.
-Do not implement it yet.
+/ticket Add saved products
+/spec tickets/004-saved-products.md
+/plan spec/004-saved-products.md
+/implement-plan plans/004-saved-products.md
 ```
 
-Then review, implement, test, and close that ticket before creating the next one.
+Each downstream artifact should reference its source so code can be traced back through plan → spec → ticket → roadmap/PRD.
 
 ## Updating an installation
 
-Pull the latest repository changes and rerun the installer with `-Force` on Windows or `--force` on macOS/Linux. This replaces only the installed skill directory, not project documentation previously generated by the skill.
+Pull the latest repository changes and rerun the installer with `-Force` on Windows or `--force` on macOS/Linux. A forced upgrade replaces only the installed skill directories. It also removes the legacy `.claude/skills/setup-prd-workspace` skill if present. Generated project documentation is not deleted.
 
 ## Safety boundaries
 
-The skill will not:
+The planning skills do not install dependencies, commit, push, merge, deploy, or silently make high-risk product decisions. `/implement-plan` changes runtime code only when the plan is approved and higher-priority project rules permit it. Material scope, architecture, dependency, migration, authentication, payment, permission, or security changes must stop for renewed approval rather than being silently absorbed.
 
-- overwrite populated project files blindly;
-- invent customer evidence or implementation status;
-- expose secrets from the PRD;
-- move or delete project files;
-- modify runtime code;
-- activate routines;
-- commit, push, merge, or deploy.
+Production deployment, destructive data operations, live billing/customer-data decisions, credential sharing, and security-policy decisions remain human-owned.
 
 ## License
 

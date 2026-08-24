@@ -4,16 +4,19 @@ Create the smallest applicable form of this structure. Reuse equivalent existing
 
 | Path | Responsibility |
 | --- | --- |
-| `AGENTS.md` | Canonical operating guide: working style, permissions, ticket discipline, verification, and reporting |
+| `AGENTS.md` | Canonical operating guide: working style, permissions, delivery flow, verification, learning, and reporting |
 | `CLAUDE.md` | Thin compatibility entry point that directs Claude-compatible tools to the canonical operating guide |
-| `roadmap.md` | Current goal, priorities, exclusions, ordered outcomes, and definition of done |
-| `review.md` | Product, UX, code, security, accessibility, and evidence review standard |
+| `roadmap.md` | Current goal, priorities, exclusions, ordered outcomes, lifecycle status, and definition of done |
+| `review.md` | Product, UX, code, security, accessibility, evidence, scope, and document-alignment review standard |
 | `context/product.md` | Product, customer, problem, promise, scope, journeys, and success criteria |
-| `context/architecture.md` | Intended architecture plus clearly separated implemented state |
+| `context/architecture.md` | Intended architecture plus clearly separated implemented and verified state |
 | `context/decisions.md` | Confirmed decisions and unresolved questions; never fabricated decisions |
-| `context/current-state.md` | Intended, implemented, verified, and unresolved status |
+| `context/current-state.md` | Proposed, specified, planned, in-progress, implemented, verified, released, and unresolved status where applicable |
+| `context/lessons.md` | Concise repository-specific lessons learned from observed implementation/review evidence; never generic advice |
 | `customers/README.md` | Format and rules for future real customer evidence; no invented notes |
-| `spec/README.md` | How active specs, tickets, and historical material are organized |
+| `tickets/README.md` | Tickets define what should change and why; one ticket, one outcome, one visible finish line |
+| `spec/README.md` | Specs define the technical contract for an approved ticket |
+| `plans/README.md` | Plans define ordered TDD implementation slices for an approved spec |
 | `demos/core-flow.md` | PRD-derived buyer/user walkthrough and expected outcome |
 | `demos/browser-review-checklist.md` | Desktop/mobile states, console/network, accessibility, and human review checks |
 | `routines/README.md` | Safe routine format and activation boundary; define no active schedule |
