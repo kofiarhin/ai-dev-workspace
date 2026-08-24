@@ -18,7 +18,7 @@ done
 script_directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repository_root="$(cd "$script_directory/.." && pwd)"
 source_root="$repository_root/skills"
-skill_names=(setup-workspace ticket spec plan implement-plan)
+skill_names=(setup-workspace morning-brief ticket spec plan implement-plan)
 
 if [[ ! -d "$source_root" ]]; then
   printf 'Skills source directory was not found: %s\n' "$source_root" >&2
@@ -71,6 +71,7 @@ for skill_name in "${skill_names[@]}"; do
   fi
 done
 
-printf 'Installed software-delivery skills at: %s\n' "$skills_directory"
+printf 'Installed AI software-delivery skills at: %s\n' "$skills_directory"
 printf 'Start with: /setup-workspace PRD.md\n'
+printf 'Orient with: /morning-brief\n'
 printf 'Then use: /ticket -> /spec -> /plan -> /implement-plan\n'
