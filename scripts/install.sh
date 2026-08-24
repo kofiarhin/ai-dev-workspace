@@ -18,7 +18,7 @@ done
 script_directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repository_root="$(cd "$script_directory/.." && pwd)"
 source_root="$repository_root/skills"
-skill_names=(setup-workspace morning-brief ticket spec plan implement-plan)
+skill_names=(setup-workspace morning-brief reset-workspace ticket spec plan implement-plan)
 
 if [[ ! -d "$source_root" ]]; then
   printf 'Skills source directory was not found: %s\n' "$source_root" >&2
@@ -41,7 +41,7 @@ if [[ -e "$legacy_destination" ]]; then
 fi
 
 if (( ${#existing[@]} > 0 )) && [[ "$force" != true ]]; then
-  printf 'One or more delivery skills are already installed. Rerun with --force to replace them:\n' >&2
+  printf 'One or more workspace skills are already installed. Rerun with --force to replace them:\n' >&2
   printf '  %s\n' "${existing[@]}" >&2
   exit 1
 fi
@@ -74,4 +74,5 @@ done
 printf 'Installed AI software-delivery skills at: %s\n' "$skills_directory"
 printf 'Start with: /setup-workspace PRD.md\n'
 printf 'Orient with: /morning-brief\n'
+printf 'Reset owned operating state with: /reset-workspace\n'
 printf 'Then use: /ticket -> /spec -> /plan -> /implement-plan\n'

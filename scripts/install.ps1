@@ -13,6 +13,7 @@ $sourceRoot = Join-Path $repositoryRoot "skills"
 $skillNames = @(
     "setup-workspace",
     "morning-brief",
+    "reset-workspace",
     "ticket",
     "spec",
     "plan",
@@ -39,7 +40,7 @@ if (Test-Path -LiteralPath $legacyDestination) {
 }
 
 if ($existing.Count -gt 0 -and -not $Force) {
-    throw "One or more delivery skills are already installed. Rerun with -Force to replace them: $($existing -join ', ')"
+    throw "One or more workspace skills are already installed. Rerun with -Force to replace them: $($existing -join ', ')"
 }
 
 New-Item -ItemType Directory -Path $skillsDirectory -Force | Out-Null
@@ -68,4 +69,5 @@ foreach ($skillName in $skillNames) {
 Write-Host "Installed AI software-delivery skills at: $skillsDirectory"
 Write-Host "Start with: /setup-workspace PRD.md"
 Write-Host "Orient with: /morning-brief"
+Write-Host "Reset owned operating state with: /reset-workspace"
 Write-Host "Then use: /ticket -> /spec -> /plan -> /implement-plan"
