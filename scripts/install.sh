@@ -18,7 +18,7 @@ done
 script_directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repository_root="$(cd "$script_directory/.." && pwd)"
 source_root="$repository_root/skills"
-skill_names=(setup-workspace morning-brief reset-workspace ticket spec plan implement-plan)
+skill_names=(setup-workspace morning-brief reset-workspace ticket spec plan implement-plan deliver-ticket)
 
 if [[ ! -d "$source_root" ]]; then
   printf 'Skills source directory was not found: %s\n' "$source_root" >&2
@@ -73,6 +73,7 @@ done
 
 printf 'Installed AI software-delivery skills at: %s\n' "$skills_directory"
 printf 'Start with: /setup-workspace PRD.md\n'
-printf 'Orient with: /morning-brief\n'
+printf 'Queue the next evidence-backed ticket with: /morning-brief\n'
+printf 'Deliver a ticket end to end with: /deliver-ticket\n'
+printf 'Manual control remains: /ticket -> /spec -> /plan -> /implement-plan\n'
 printf 'Reset owned operating state with: /reset-workspace\n'
-printf 'Then use: /ticket -> /spec -> /plan -> /implement-plan\n'
