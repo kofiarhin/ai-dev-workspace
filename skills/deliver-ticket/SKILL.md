@@ -16,7 +16,7 @@ Resolve input using [references/workflow.md](references/workflow.md) in this pre
 1. an existing explicit ticket path;
 2. a unique ticket number or basename;
 3. no argument → select the highest-numbered eligible unfinished numeric ticket;
-4. otherwise treat the argument as a freeform task, apply `/ticket` rules, prevent duplicates, and create/reuse a ticket with `source: deliver-ticket`.
+4. otherwise treat the argument as a freeform task, apply `/ticket` rules, prevent duplicates, reuse an equivalent ticket without changing its provenance, or create a new ticket with `source: deliver-ticket`.
 
 Ambiguous references stop for one concrete question. Never guess between multiple tickets.
 
