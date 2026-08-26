@@ -17,7 +17,8 @@ $skillNames = @(
     "ticket",
     "spec",
     "plan",
-    "implement-plan"
+    "implement-plan",
+    "deliver-ticket"
 )
 
 if (-not (Test-Path -LiteralPath $sourceRoot -PathType Container)) {
@@ -68,6 +69,7 @@ foreach ($skillName in $skillNames) {
 
 Write-Host "Installed AI software-delivery skills at: $skillsDirectory"
 Write-Host "Start with: /setup-workspace PRD.md"
-Write-Host "Orient with: /morning-brief"
+Write-Host "Queue the next evidence-backed ticket with: /morning-brief"
+Write-Host "Deliver a ticket end to end with: /deliver-ticket"
+Write-Host "Manual control remains: /ticket -> /spec -> /plan -> /implement-plan"
 Write-Host "Reset owned operating state with: /reset-workspace"
-Write-Host "Then use: /ticket -> /spec -> /plan -> /implement-plan"
