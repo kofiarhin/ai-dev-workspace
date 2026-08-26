@@ -62,6 +62,19 @@ Required on newly created tickets:
 - `source`;
 - `created` in `YYYY-MM-DD` form.
 
+Canonical `status` values:
+
+- `ready`;
+- `awaiting-approval`;
+- `in-progress`;
+- `verifying`;
+- `delivered`;
+- `blocked`;
+- `failed-verification`;
+- `superseded`.
+
+`delivered` and `superseded` are terminal queue states.
+
 Allowed `source` values:
 
 - `manual` — created directly through `/ticket`;
