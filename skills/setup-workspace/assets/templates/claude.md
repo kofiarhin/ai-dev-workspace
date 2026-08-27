@@ -2,6 +2,12 @@
 
 Read and follow `AGENTS.md` as the canonical project operating guide. Then read `roadmap.md`, `review.md`, `context/lessons.md`, and the context relevant to the current task.
 
-Use `/morning-brief` for read-only orientation and one evidence-backed recommended next outcome. A morning brief does not create a ticket or authorize execution.
+Use `/workspace-health` for a read-only audit when project truth, lifecycle state, verification evidence, or artifact linkage may have drifted.
 
-Follow the delivery chain `/ticket` → `/spec` → `/plan` → `/implement-plan` instead of collapsing product definition and execution into one step.
+Use `/morning-brief` for project orientation, prioritization, and safe queue intake. It may create or reuse at most one evidence-backed ticket when the active project rules allow that narrow write; it never implements the ticket.
+
+Use `/deliver-ticket` as the default end-to-end delivery command. It resolves a ticket, creates or revalidates its spec and TDD plan, presents one consolidated execution contract, and waits for explicit approval before runtime/application edits.
+
+For step-by-step control, use `/ticket` → `/spec` → `/plan` → `/implement-plan`.
+
+Repository and verification evidence outrank stale planning or lifecycle metadata. Keep delivered, committed, pushed, merged, deployed, and released states distinct.

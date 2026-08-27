@@ -18,10 +18,21 @@ done
 script_directory="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repository_root="$(cd "$script_directory/.." && pwd)"
 source_root="$repository_root/skills"
-skill_names=(setup-workspace morning-brief reset-workspace ticket spec plan implement-plan deliver-ticket)
 
 if [[ ! -d "$source_root" ]]; then
   printf 'Skills source directory was not found: %s\n' "$source_root" >&2
+  exit 1
+fi
+
+skill_names=()
+while IFS= read -r source_directory; do
+  if [[ -f "$source_directory/SKILL.md" ]]; then
+    skill_names+=("$(basename "$source_directory")")
+  fi
+done < <(find "$source_root" -mindepth 1 -maxdepth 1 -type d -print | sort)
+
+if (( ${#skill_names[@]} == 0 )); then
+  printf 'No installable skills containing SKILL.md were found under: %s\n' "$source_root" >&2
   exit 1
 fi
 
@@ -58,11 +69,6 @@ for skill_name in "${skill_names[@]}"; do
   source_directory="$source_root/$skill_name"
   destination="$skills_directory/$skill_name"
 
-  if [[ ! -f "$source_directory/SKILL.md" ]]; then
-    printf 'Skill source is incomplete: %s\n' "$source_directory" >&2
-    exit 1
-  fi
-
   cp -R -- "$source_directory" "$destination"
 
   if [[ ! -f "$destination/SKILL.md" ]]; then
@@ -71,8 +77,10 @@ for skill_name in "${skill_names[@]}"; do
   fi
 done
 
-printf 'Installed AI software-delivery skills at: %s\n' "$skills_directory"
+printf 'Installed %d AI software-delivery skills at: %s\n' "${#skill_names[@]}" "$skills_directory"
+printf 'Installed skills: %s\n' "${skill_names[*]}"
 printf 'Start with: /setup-workspace PRD.md\n'
+printf 'Audit consistency with: /workspace-health\n'
 printf 'Queue the next evidence-backed ticket with: /morning-brief\n'
 printf 'Deliver a ticket end to end with: /deliver-ticket\n'
 printf 'Manual control remains: /ticket -> /spec -> /plan -> /implement-plan\n'
