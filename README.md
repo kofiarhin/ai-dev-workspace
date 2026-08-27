@@ -1,8 +1,14 @@
 # AI Software Delivery Workspace
 
-A reusable Claude Code workflow that turns a PRD and repository context into a persistent, reviewable software-delivery system with evidence-backed intake, ticket/spec/plan traceability, TDD execution, project-truth reconciliation, safe GitHub publication, and manifest-backed workspace reset.
+A reusable Claude Code software-delivery operating system for turning a PRD and repository into a persistent, evidence-backed workflow for intake, specification, TDD implementation, verification, project-truth reconciliation, and safe GitHub publication.
 
-The current package contains eleven installable skills:
+## Start here
+
+For the full day-to-day operating manual, command decision table, approval boundaries, lifecycle states, recovery scenarios, and examples, read:
+
+**[AI Dev Workspace Operating System Guide](OPERATING_SYSTEM.md)**
+
+The package currently contains eleven installable commands:
 
 ```text
 /setup-workspace
@@ -18,58 +24,92 @@ The current package contains eleven installable skills:
 /publish-ticket
 ```
 
-The installers discover every direct `skills/*/SKILL.md` directory automatically, so new skills do not require duplicated hardcoded installer registries.
+The installers automatically discover every direct `skills/*/SKILL.md` directory, so new skills do not require a duplicated hardcoded registry.
 
-## Default operating loop
+## Default workflow
 
 ```text
-PRD
-  ↓
-/setup-workspace
-  ↓
-project brain + roadmap + ownership manifest
-  ↓
-/workspace-health      optional read-only audit when state may be stale
-  ↓
-/sync-project          optional approved documentation/lifecycle repair
-  ↓
+/setup-workspace PRD.md
+        ↓
+/workspace-health
+        ↓
 /morning-brief
-  ↓
-create or reuse one evidence-backed ticket
-  ↓
-tickets/NNN-feature.md
-status: ready
-  ↓
+        ↓
 /deliver-ticket
-  ↓
-spec → TDD plan → consolidated execution review
-  ↓
+        ↓
 Approve plan
-  ↓
+        ↓
 RED → GREEN → REFACTOR → VERIFY
-  ↓
-final verification + review
-  ↓
-project truth + ticket delivery evidence
-  ↓
+        ↓
 status: delivered
-  ↓
-/publish-ticket        optional separate approval
-  ↓
-commit if needed → normal branch push → draft PR
+        ↓
+/publish-ticket
+        ↓
+Approve publish
+        ↓
+commit if needed → push branch → draft PR
+        ↓
+human review / merge
+        ↓
+/sync-project        when durable project truth needs repair
 ```
 
-The lower-level delivery commands remain available when manual control is preferable:
+The lower-level delivery chain remains available for manual control:
 
 ```text
 /ticket → /spec → /plan → /implement-plan
 ```
 
-`delivered`, `committed`, `pushed`, `merged`, `deployed`, and `released` are deliberately different states.
+## Core model
 
-## What `/setup-workspace` creates
+The workspace keeps software states deliberately separate:
 
-The standard operating workspace includes:
+```text
+proposed
+specified
+planned
+awaiting-approval
+in-progress
+implemented
+verifying
+verified
+delivered
+committed
+pushed
+merged
+deployed
+released
+```
+
+A ticket being `delivered` does not mean it was committed, pushed, merged, deployed, or released.
+
+## Command map
+
+### Workspace
+
+- `/setup-workspace` — create or reconcile the persistent operating workspace from a PRD/specification.
+- `/workspace-health` — strictly read-only audit of repository truth, lifecycle state, verification debt, artifact links, approvals, and manifest integrity.
+- `/sync-project` — approval-gated repair of durable project docs/lifecycle metadata from current evidence.
+- `/reset-workspace` — exact-preview reset of manifest-owned operating state while preserving application/runtime files and installed skills.
+
+### Intake and delivery
+
+- `/morning-brief` — reconcile current evidence and create/reuse at most one next ticket.
+- `/ticket` — define what should change and why.
+- `/spec` — define the repository-grounded technical contract.
+- `/plan` — define ordered implementation slices.
+- `/implement-plan` — execute an approved plan with RED → GREEN → REFACTOR → VERIFY.
+- `/deliver-ticket` — orchestrate ticket → spec → plan → execution approval → implementation → verification → delivery.
+
+### Publication
+
+- `/publish-ticket` — after a ticket is already delivered, validate the exact branch/diff and, after separate approval, create a scoped commit when needed, push without force, and create one draft PR. It never merges or deploys.
+
+See [skills/README.md](skills/README.md) for the skill registry and each `skills/<command>/SKILL.md` for the exact command contract.
+
+## What setup creates
+
+The standard project operating layer includes:
 
 ```text
 .claude/
@@ -85,186 +125,14 @@ context/
   current-state.md
   lessons.md
 customers/
-  README.md
 tickets/
-  README.md
 spec/
-  README.md
 plans/
-  README.md
 demos/
-  core-flow.md
-  browser-review-checklist.md
 routines/
-  README.md
 ```
 
-Existing files are preserved and compatible content is merged conservatively. The manifest records whether operating paths were `created`, `updated`, or `reused`; it must never claim ownership of application/runtime code or unrelated project files.
-
-The repository becomes the long-term memory. `context/lessons.md` keeps short repository-specific lessons learned from observed implementation, debugging, verification, or review evidence.
-
-## Command responsibilities
-
-### `/setup-workspace`
-
-Builds the project brain from a selected PRD or equivalent product specification plus current repository evidence. Setup is documentation-only and maintains `.claude/workspace-manifest.json` for safe reset ownership.
-
-### `/workspace-health`
-
-Strictly read-only workspace audit. It compares operating documents and lifecycle metadata with repository, Git, GitHub, and verification evidence and reports:
-
-- blockers;
-- truth drift;
-- lifecycle drift;
-- verification debt;
-- ticket/spec/plan linkage problems;
-- stale approvals/plans;
-- ownership-manifest issues.
-
-It diagnoses; it never repairs state.
-
-### `/sync-project`
-
-Reconciles durable project truth after work happened outside the normal delivery flow, such as a separately merged PR or verification completed later.
-
-It may update only approved operating documents and evidence-backed ticket lifecycle fields. Unless the active project grants a narrower command-scoped permission, it presents the exact reconciliation plan and requires:
-
-```text
-Approve sync
-```
-
-It does not change runtime code, dependencies/data, Git state, GitHub state, specs/plans, merge, deployment, or release state.
-
-### `/morning-brief`
-
-Reconciles the operating guide, roadmap, current state, verification evidence, available GitHub state, active tickets/specs/plans, and real customer signals. It identifies at most one highest-leverage next outcome.
-
-Its only repository write is creating at most one evidence-backed ticket under `tickets/` when no equivalent active ticket exists and no material decision blocks safe scoping. Otherwise it references the existing ticket or creates none.
-
-### `/reset-workspace`
-
-Resets only operating state explicitly owned by `.claude/workspace-manifest.json` as `created`. It shows the exact deletion set and requires explicit approval before deletion.
-
-It preserves application/runtime files, source product documents, Git metadata, secrets/configuration, dependency files, lockfiles, deployment configuration, unknown project files, and `.claude/skills/`. Missing or invalid ownership evidence fails closed.
-
-### `/ticket`
-
-Turns a roadmap outcome, bug report, idea, or request into one evidence-backed assignment defining **what should change and why**, not implementation design.
-
-### `/spec`
-
-Turns one approved ticket into a repository-grounded technical contract defining how the requested behaviour should fit the current system.
-
-### `/plan`
-
-Turns one approved specification into ordered implementation slices. Testable slices use:
-
-```text
-RED → GREEN → REFACTOR → VERIFY
-```
-
-### `/implement-plan`
-
-Executes an approved plan against the current repository, one testable slice at a time. It runs relevant verification, reviews the result, updates project truth only from observed evidence, and synchronizes lifecycle-aware ticket acceptance/delivery evidence.
-
-### `/deliver-ticket`
-
-Orchestrates the full delivery lifecycle without weakening `/ticket`, `/spec`, `/plan`, or `/implement-plan`.
-
-It resolves one queued/supplied ticket, creates or revalidates its spec and TDD plan, presents one consolidated execution contract, waits for explicit runtime approval, then coordinates implementation, verification, review, project-truth synchronization, and evidence-backed delivery.
-
-With no stronger project phrase, runtime execution requires:
-
-```text
-Approve plan
-```
-
-Material scope, architecture, dependency, migration, authentication, payment, permission, security, deployment, destructive-behaviour, acceptance, or verification changes invalidate prior approval.
-
-### `/publish-ticket`
-
-Separate post-delivery publication boundary. The source ticket must already be lifecycle-aware and `status: delivered` with required delivery evidence.
-
-Before Git/GitHub writes it validates the non-protected branch, exact diff/commit set, base branch, remote state, and duplicate-PR state, then presents one publish contract. With no stronger project phrase it requires:
-
-```text
-Approve publish
-```
-
-After approval it may:
-
-- create one scoped commit when delivered changes are still uncommitted;
-- push the approved non-main branch normally, never with force;
-- create exactly one draft pull request.
-
-It never merges, deploys, releases, rewrites history, deletes branches, or mutates production/data state.
-
-## Ticket queue and lifecycle
-
-New tickets use frontmatter such as:
-
-```yaml
----
-ticket_schema: 1
-status: ready
-source: manual
-created: YYYY-MM-DD
----
-```
-
-Canonical statuses:
-
-- `ready` — scoped and waiting for delivery;
-- `awaiting-approval` — valid spec/plan and current execution contract are waiting for approval;
-- `in-progress` — approved runtime implementation has started;
-- `verifying` — implementation is complete enough for final verification/review;
-- `delivered` — acceptance criteria, required verification/review, project truth, and delivery evidence are complete;
-- `blocked` — a material decision/prerequisite prevents progress;
-- `failed-verification` — an observed required verification failure remains unresolved;
-- `superseded` — another identified ticket intentionally replaces this one.
-
-`delivered` and `superseded` are terminal queue states. A regression after delivery becomes a new ticket rather than silently reopening history.
-
-A merge alone never proves delivery. A missing check is `Not run`, not automatically `Failed`.
-
-## `/deliver-ticket` input modes
-
-Use the latest eligible unfinished numeric ticket:
-
-```text
-/deliver-ticket
-```
-
-Use an exact ticket:
-
-```text
-/deliver-ticket tickets/004-saved-products.md
-```
-
-Resolve by unique number or basename:
-
-```text
-/deliver-ticket 004
-/deliver-ticket 004-saved-products
-```
-
-Start from a freeform task:
-
-```text
-/deliver-ticket Add saved products to the catalogue
-```
-
-Freeform input applies normal ticket evidence/scope and duplicate rules before creating a new ticket.
-
-## Approval and verification
-
-Before runtime/application edits, `/deliver-ticket` presents one execution contract covering goal, scope, exclusions, technical approach, affected areas, TDD slices, material checkpoints, verification, risks/assumptions, human-review items, and explicitly excluded external actions.
-
-After implementation, relevant checks are reported as `Passed`, `Failed`, or `Not run`. Final review uses `Must fix`, `Should fix`, and `Okay to ship`.
-
-A ticket is delivered only when supported by observed acceptance, verification/review, and synchronized project truth.
-
-Publication has a separate approval boundary and does not retroactively change delivery evidence.
+The repository becomes long-term project memory. Repository and verification evidence outrank stale planning/lifecycle metadata.
 
 ## Install on Windows
 
@@ -274,7 +142,7 @@ cd ai-dev-workspace
 .\scripts\install.ps1 -ProjectPath "C:\path\to\your-project"
 ```
 
-## Install on macOS or Linux
+## Install on macOS/Linux
 
 ```bash
 git clone https://github.com/kofiarhin/ai-dev-workspace.git
@@ -288,19 +156,17 @@ Skills are installed under:
 your-project/.claude/skills/
 ```
 
-The installers discover installable skill directories automatically. If one or more corresponding target skills already exist, rerun with `-Force` on Windows or `--force` on Unix to replace the installed skill directories.
+If target skills already exist, rerun with `-Force` on Windows or `--force` on Unix to replace only the installed skill directories. Generated operating documents and `.claude/workspace-manifest.json` are preserved.
 
-Generated project documentation and `.claude/workspace-manifest.json` are not deleted by the installer.
+## Initialize a project
 
-## Start a project
-
-Place a PRD in the project and run:
+Place a PRD or equivalent specification in the project, then run:
 
 ```text
 /setup-workspace PRD.md
 ```
 
-Then use:
+For normal work:
 
 ```text
 /workspace-health
@@ -308,38 +174,76 @@ Then use:
 /deliver-ticket
 ```
 
-Use `/sync-project` when external/manual repository reality needs to be reconciled into durable project truth. Use `/publish-ticket` only after a ticket is delivered and Git publication is explicitly wanted.
+Use `/sync-project` when repository/Git/GitHub reality changed outside the normal delivery flow. Use `/publish-ticket` only after the source ticket is already `status: delivered` and GitHub publication is explicitly wanted.
 
-## Manual delivery example
+## Approval boundaries
 
-```text
-/ticket Add saved products
-/spec tickets/004-saved-products.md
-/plan spec/004-saved-products.md
-/implement-plan plans/004-saved-products.md
-```
-
-Each downstream artifact should reference its source so work can be traced plan → spec → ticket → roadmap/PRD.
-
-## Reset example
+The fallback approval phrases are:
 
 ```text
-/reset-workspace
+Approve plan
+Approve sync
+Approve publish
 ```
 
-The skill first validates the manifest, shows the exact manifest-owned deletion set and what will be preserved, then waits for explicit approval. `/reset-workspace` is not an uninstall command; `.claude/skills/` remains installed.
+Project-specific instructions may require stricter phrases or additional gates.
+
+- `Approve plan` covers only the presented runtime execution contract.
+- `Approve sync` covers only the presented operating-document/lifecycle reconciliation.
+- `Approve publish` covers only the presented repository/branch/commit/push/draft-PR contract.
+
+Material changes invalidate the relevant prior approval.
+
+## Ticket lifecycle
+
+Canonical ticket states are:
+
+- `ready`
+- `awaiting-approval`
+- `in-progress`
+- `verifying`
+- `delivered`
+- `blocked`
+- `failed-verification`
+- `superseded`
+
+`delivered` and `superseded` are terminal historical states. A later regression becomes a new ticket referencing the original work.
+
+## Verification model
+
+Checks are reported only as:
+
+```text
+Passed
+Failed
+Not run
+```
+
+A check that was not executed is never claimed as passed. A ticket is delivered only when observed evidence supports acceptance criteria, required verification/review, synchronized project truth, and delivery evidence.
 
 ## Safety boundaries
 
-- `/workspace-health` is read-only.
-- `/sync-project` is documentation/lifecycle-only and approval-gated unless stronger project instructions provide a narrow permission.
-- `/morning-brief` may create at most one queued ticket and cannot implement it.
-- `/deliver-ticket` and `/implement-plan` may change runtime code only after required execution approval and revalidation.
-- `/publish-ticket` has a separate publication approval and may only create a scoped commit when needed, normal branch push, and draft PR.
-- `/reset-workspace` deletes only validated manifest-owned `created` operating state after exact preview and approval.
-- Planning/delivery/publication do not imply merge, deployment, release, production activation, destructive data operations, live billing/customer-data decisions, credential sharing, or security-policy decisions.
+- `/workspace-health` never writes.
+- `/sync-project` changes only approved operating docs/lifecycle metadata.
+- `/morning-brief` may create at most one evidence-backed queue ticket and never implements it.
+- `/deliver-ticket` and `/implement-plan` change runtime code only after the required execution approval and revalidation.
+- `/publish-ticket` requires separate publication approval and never force-pushes, rewrites history, merges, deploys, releases, deletes branches, or mutates production/data state.
+- `/reset-workspace` deletes only validated manifest-owned `created` operating state after an exact preview and explicit approval.
+- Project-specific `AGENTS.md` and safety rules may always be stricter.
 
-Project-specific instructions may be stricter and always remain authoritative within their permitted precedence.
+## Full usage manual
+
+Read **[OPERATING_SYSTEM.md](OPERATING_SYSTEM.md)** for:
+
+- the complete daily workflow;
+- command selection guidance;
+- approval and permission boundaries;
+- lifecycle semantics;
+- TDD execution flow;
+- publication flow;
+- recovery after interrupted work, stale docs, missing verification, or outside merges;
+- manual/expert command patterns;
+- practical command recipes.
 
 ## License
 
