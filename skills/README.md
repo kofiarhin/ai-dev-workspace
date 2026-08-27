@@ -6,6 +6,7 @@ Every direct child of `skills/` that contains `SKILL.md` is an installable works
 
 - `/setup-workspace` — create the persistent AI operating workspace from a PRD/specification.
 - `/workspace-health` — read-only consistency and evidence audit.
+- `/sync-project` — approval-gated documentation/lifecycle reconciliation from current evidence.
 - `/reset-workspace` — manifest-backed reset of workspace-owned operating state.
 
 ## Intake and delivery

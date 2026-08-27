@@ -4,9 +4,11 @@
 
 Summarize the product, customer, problem, promise, and current goal from supported project evidence.
 
-## Workspace health
+## Workspace health and synchronization
 
 Use `/workspace-health` when durable project truth may have drifted from repository, Git, GitHub, or verification evidence. It is strictly read-only and reports blockers, truth drift, lifecycle drift, verification debt, artifact-link integrity, and manifest integrity. It may recommend a repair, but it never edits files or external state.
+
+Use `/sync-project` when supported evidence shows that durable project truth or lifecycle documentation must catch up after work happened outside the normal delivery flow. It may update only approved operating documents/ticket lifecycle evidence and must preserve runtime code, specs/plans, dependencies/data, Git state, and external systems. Unless stronger project rules grant a narrow sync permission, it presents the exact documentation change plan and waits for `Approve sync` before writing.
 
 ## Operator workflow
 
@@ -24,6 +26,8 @@ Use `/deliver-ticket` as the default end-to-end delivery command.
 
 ```text
 /workspace-health   # optional read-only audit when state may be stale
+      ↓
+/sync-project       # optional approved repair of documentation/lifecycle drift
       ↓
 /morning-brief
       ↓
@@ -79,6 +83,7 @@ Canonical states are:
 - Read the product source, roadmap, review standard, relevant context, lessons, and current repository evidence before changing work.
 - Keep one ticket to one outcome and one reviewable change.
 - Use `/workspace-health` for diagnosis instead of silently repairing contradictory state.
+- Use `/sync-project` only for evidence-backed operating-document/lifecycle reconciliation, never as a shortcut around delivery approval.
 - Keep morning-brief intake, ticket, spec, plan, and implementation responsibilities separate even when `/deliver-ticket` orchestrates them.
 - Preserve unrelated work and existing project conventions.
 - Distinguish proposed, specified, planned, awaiting-approval, in-progress, implemented, verifying, verified, committed, pushed, merged, deployed, and released states when relevant.
@@ -91,7 +96,7 @@ Canonical states are:
 
 Define safe/read-only, approval-required, and human-owned actions for this project. Material scope, dependency, migration, authentication, payment, permission, security, deployment, or destructive changes require the appropriate human decision.
 
-`/workspace-health` is read-only. `/morning-brief` has one narrow write permission: create one queued ticket. `/deliver-ticket` may create/update ticket/spec/plan documentation to reach execution review when project rules allow, but runtime changes require explicit execution approval. Push, merge, deploy, destructive data operations, billing/customer-data decisions, and security-policy decisions are not implied by delivery.
+`/workspace-health` is read-only. `/sync-project` is documentation/lifecycle-only and approval-gated unless the project explicitly grants a narrow sync write. `/morning-brief` has one narrow write permission: create one queued ticket. `/deliver-ticket` may create/update ticket/spec/plan documentation to reach execution review when project rules allow, but runtime changes require explicit execution approval. Push, merge, deploy, destructive data operations, billing/customer-data decisions, and security-policy decisions are not implied by delivery.
 
 ## Document alignment
 
