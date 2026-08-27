@@ -18,4 +18,8 @@ Every direct child of `skills/` that contains `SKILL.md` is an installable works
 - `/implement-plan` — execute an approved plan and synchronize verified truth.
 - `/deliver-ticket` — orchestrate ticket → spec → plan → approval → implementation → verification → delivery.
 
+## Publication
+
+- `/publish-ticket` — after delivery, approval-gated scoped commit + normal branch push + draft pull request; never merge or deploy.
+
 A skill may add `references/`, `assets/`, or `agents/` when useful. `SKILL.md` remains the required entry contract.

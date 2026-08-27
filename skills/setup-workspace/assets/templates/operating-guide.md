@@ -44,13 +44,19 @@ RED → GREEN → REFACTOR → VERIFY
 final verification → review → project truth sync
       ↓
 status: delivered
+      ↓
+/publish-ticket     # optional, separate explicit approval
+      ↓
+commit if needed → push non-main branch → draft PR
 ```
 
 `/deliver-ticket` may also be called with an explicit ticket path, a unique ticket number/basename, or a freeform task. With no argument it selects the highest-numbered eligible unfinished numeric ticket. It skips delivered/superseded tickets and revalidates interrupted work before continuation.
 
 Runtime implementation begins only after the consolidated execution contract receives the approval phrase required by project instructions. Material changes invalidate prior approval.
 
-For step-by-step/manual control, the lower-level commands remain available:
+`/publish-ticket` is a separate post-delivery boundary. The ticket must already be delivered. It presents the exact branch/base/files-or-commits/commit-message/push/draft-PR contract and requires explicit publication approval before Git/GitHub writes. It never force-pushes, merges, deploys, releases, or mutates production state.
+
+For step-by-step/manual delivery control, the lower-level commands remain available:
 
 ```text
 /ticket → /spec → /plan → /implement-plan
@@ -84,11 +90,11 @@ Canonical states are:
 - Keep one ticket to one outcome and one reviewable change.
 - Use `/workspace-health` for diagnosis instead of silently repairing contradictory state.
 - Use `/sync-project` only for evidence-backed operating-document/lifecycle reconciliation, never as a shortcut around delivery approval.
-- Keep morning-brief intake, ticket, spec, plan, and implementation responsibilities separate even when `/deliver-ticket` orchestrates them.
+- Keep morning-brief intake, ticket, spec, plan, implementation, and publication responsibilities separate even when commands orchestrate multiple stages.
 - Preserve unrelated work and existing project conventions.
-- Distinguish proposed, specified, planned, awaiting-approval, in-progress, implemented, verifying, verified, committed, pushed, merged, deployed, and released states when relevant.
+- Distinguish proposed, specified, planned, awaiting-approval, in-progress, implemented, verifying, verified, delivered, committed, pushed, merged, deployed, and released states when relevant.
 - Prefer TDD for implementation: RED → GREEN → REFACTOR → VERIFY.
-- Never treat a morning brief, ticket, specification, or plan as implementation evidence.
+- Never treat a morning brief, ticket, specification, plan, commit, push, or PR as implementation/verification evidence by itself.
 - Add lessons only when they are repository-specific and supported by observed work.
 - Repository/verification evidence outranks stale lifecycle metadata when completion is evaluated.
 
@@ -96,7 +102,7 @@ Canonical states are:
 
 Define safe/read-only, approval-required, and human-owned actions for this project. Material scope, dependency, migration, authentication, payment, permission, security, deployment, or destructive changes require the appropriate human decision.
 
-`/workspace-health` is read-only. `/sync-project` is documentation/lifecycle-only and approval-gated unless the project explicitly grants a narrow sync write. `/morning-brief` has one narrow write permission: create one queued ticket. `/deliver-ticket` may create/update ticket/spec/plan documentation to reach execution review when project rules allow, but runtime changes require explicit execution approval. Push, merge, deploy, destructive data operations, billing/customer-data decisions, and security-policy decisions are not implied by delivery.
+`/workspace-health` is read-only. `/sync-project` is documentation/lifecycle-only and approval-gated unless the project explicitly grants a narrow sync write. `/morning-brief` has one narrow write permission: create one queued ticket. `/deliver-ticket` may create/update ticket/spec/plan documentation to reach execution review when project rules allow, but runtime changes require explicit execution approval. `/publish-ticket` requires a separate publish approval for scoped commit/push/draft-PR actions. Merge, deploy, destructive data operations, billing/customer-data decisions, and security-policy decisions are not implied by delivery or publication.
 
 ## Document alignment
 
