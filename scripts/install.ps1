@@ -10,19 +10,22 @@ $ErrorActionPreference = "Stop"
 
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
 $sourceRoot = Join-Path $repositoryRoot "skills"
-$skillNames = @(
-    "setup-workspace",
-    "morning-brief",
-    "reset-workspace",
-    "ticket",
-    "spec",
-    "plan",
-    "implement-plan",
-    "deliver-ticket"
-)
 
 if (-not (Test-Path -LiteralPath $sourceRoot -PathType Container)) {
     throw "Skills source directory was not found: $sourceRoot"
+}
+
+$skillNames = @()
+Get-ChildItem -LiteralPath $sourceRoot -Directory |
+    Sort-Object Name |
+    ForEach-Object {
+        if (Test-Path -LiteralPath (Join-Path $_.FullName "SKILL.md") -PathType Leaf) {
+            $skillNames += $_.Name
+        }
+    }
+
+if ($skillNames.Count -eq 0) {
+    throw "No installable skills containing SKILL.md were found under: $sourceRoot"
 }
 
 $resolvedProject = (Resolve-Path -LiteralPath $ProjectPath).Path
@@ -56,10 +59,6 @@ foreach ($skillName in $skillNames) {
     $source = Join-Path $sourceRoot $skillName
     $destination = Join-Path $skillsDirectory $skillName
 
-    if (-not (Test-Path -LiteralPath (Join-Path $source "SKILL.md") -PathType Leaf)) {
-        throw "Skill source is incomplete: $source"
-    }
-
     Copy-Item -LiteralPath $source -Destination $destination -Recurse
 
     if (-not (Test-Path -LiteralPath (Join-Path $destination "SKILL.md") -PathType Leaf)) {
@@ -67,8 +66,10 @@ foreach ($skillName in $skillNames) {
     }
 }
 
-Write-Host "Installed AI software-delivery skills at: $skillsDirectory"
+Write-Host "Installed $($skillNames.Count) AI software-delivery skills at: $skillsDirectory"
+Write-Host "Installed skills: $($skillNames -join ', ')"
 Write-Host "Start with: /setup-workspace PRD.md"
+Write-Host "Audit consistency with: /workspace-health"
 Write-Host "Queue the next evidence-backed ticket with: /morning-brief"
 Write-Host "Deliver a ticket end to end with: /deliver-ticket"
 Write-Host "Manual control remains: /ticket -> /spec -> /plan -> /implement-plan"
