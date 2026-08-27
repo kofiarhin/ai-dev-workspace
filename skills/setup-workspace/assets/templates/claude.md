@@ -10,6 +10,8 @@ Use `/morning-brief` for project orientation, prioritization, and safe queue int
 
 Use `/deliver-ticket` as the default end-to-end delivery command. It resolves a ticket, creates or revalidates its spec and TDD plan, presents one consolidated execution contract, and waits for explicit approval before runtime/application edits.
 
-For step-by-step control, use `/ticket` → `/spec` → `/plan` → `/implement-plan`.
+After a ticket is already delivered, use `/publish-ticket` only when the user wants the approved non-main branch committed when needed, pushed without force, and opened as a draft pull request. Publication never implies merge, deployment, or release.
+
+For step-by-step delivery control, use `/ticket` → `/spec` → `/plan` → `/implement-plan`.
 
 Repository and verification evidence outrank stale planning or lifecycle metadata. Keep delivered, committed, pushed, merged, deployed, and released states distinct.
